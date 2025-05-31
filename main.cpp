@@ -1,21 +1,32 @@
-#include "RightTriangle.h"
+#include "Hexagon.h"
 #include <iostream>
-#include <locale>  
 
 int main() {
     try {
+        std::vector<Point> points = {
+            Point(1, 0),
+            Point(0.5, sqrt(3)/2),
+            Point(-0.5, sqrt(3)/2),
+            Point(-1, 0),
+            Point(-0.5, -sqrt(3)/2),
+            Point(0.5, -sqrt(3)/2)
+        };
         
-        RightTriangle triangle(3.0, 4.0);
-
+        Hexagon h1(points);
+        std::cout << h1 << std::endl;
+        std::cout << "Area: " << h1.Area() << std::endl;
+        std::cout << "Perimeter: " << h1.Perimeter() << std::endl;
+        std::cout << "Circumradius: " << h1.Circumradius() << std::endl;
         
-        std::cout << "Катеты: " << triangle.getA() << " и " << triangle.getB() << std::endl;
-        std::cout << "Площадь: " << triangle.calculateArea() << std::endl;
-        std::cout << "Радиус описанной окружности: " << triangle.calculateCircumradius() << std::endl;
-
-    } catch (const std::invalid_argument& e) {
-        std::cerr << "Ошибка: " << e.what() << std::endl;
+        std::cout << "Enter 6 points (x y) for hexagon: ";
+        Hexagon h2;
+        std::cin >> h2;
+        std::cout << h2 << std::endl;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
-
+    
     return 0;
 }
