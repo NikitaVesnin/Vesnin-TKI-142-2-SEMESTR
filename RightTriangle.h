@@ -8,7 +8,7 @@ private:
 
 public:
     RightTriangle();  
-    RightTriangle(double cathet1, double cathet2);  
+    RightTriangle(double cathet1, double cathetus2);  
 
     
     double calculateArea() const;          

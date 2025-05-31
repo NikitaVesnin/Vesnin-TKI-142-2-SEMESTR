@@ -1,7 +1,6 @@
 #include "RightTriangle.h"
 #include <stdexcept>  
 
-
 RightTriangle::RightTriangle() {
     a = 0;
     b = 0;
