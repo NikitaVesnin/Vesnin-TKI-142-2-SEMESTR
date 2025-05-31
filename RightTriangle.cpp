@@ -6,7 +6,6 @@ RightTriangle::RightTriangle() {
     b = 0;
 }
 
-
 RightTriangle::RightTriangle(double cathet1, double cathet2) {
     if (cathet1 <= 0 || cathet2 <= 0) {
         throw std::invalid_argument("Катеты должны быть положительными!");

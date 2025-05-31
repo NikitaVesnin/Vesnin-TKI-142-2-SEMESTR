@@ -10,7 +10,6 @@ public:
     RightTriangle();  
     RightTriangle(double cathet1, double cathetus2);  
 
-    
     double calculateArea() const;          
     double calculateCircumradius() const;  
 

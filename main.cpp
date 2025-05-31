@@ -6,7 +6,6 @@ int main() {
     try {
         
         RightTriangle triangle(3.0, 4.0);
-
         
         std::cout << "Катеты: " << triangle.getA() << " и " << triangle.getB() << std::endl;
         std::cout << "Площадь: " << triangle.calculateArea() << std::endl;
