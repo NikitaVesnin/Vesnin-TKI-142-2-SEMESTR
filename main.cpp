@@ -1,9 +1,5 @@
 #include "Hexagon.h"
 #include <iostream>
-/**
- * @brief Точка входа в программу
- * @return 0 при успешном выполнении, 1 при ошибке
- */
 int main() {
     try {
         std::vector<Point> points = {
@@ -30,6 +26,5 @@ int main() {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
-    
     return 0;
 }

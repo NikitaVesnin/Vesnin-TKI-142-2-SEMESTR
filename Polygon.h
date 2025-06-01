@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 #include "Point.h"
-
 class Polygon {
 public:
     virtual ~Polygon() = default;
