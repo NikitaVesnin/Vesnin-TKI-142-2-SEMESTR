@@ -1,24 +1,21 @@
 #include "CircularList.h"
-#include "Node.h"
-#include <sstream>
 #include <stdexcept>
+#include <sstream>
+
+
+Node::Node(int value) : data(value), next(nullptr) {}
+
 
 CircularList::CircularList() : head(nullptr), size(0) {}
 
-CircularList::CircularList(std::initializer_list<int> init) : CircularList() {
-    for (int value : init) {
-        insert(value);
+CircularList::CircularList(std::initializer_list<int> initList) : CircularList() {
+    for (auto it = initList.end(); it != initList.begin(); ) {
+        prepend(*(--it));
     }
 }
 
 CircularList::CircularList(const CircularList& other) : CircularList() {
-    if (other.head) {
-        Node* current = other.head;
-        do {
-            insert(current->data);
-            current = current->next;
-        } while (current != other.head);
-    }
+    copyFrom(other);
 }
 
 CircularList::CircularList(CircularList&& other) noexcept 
@@ -31,30 +28,10 @@ CircularList::~CircularList() {
     clear();
 }
 
-void CircularList::clear() {
-    if (!head) return;
-    
-    Node* current = head->next;
-    while (current != head) {
-        Node* temp = current;
-        current = current->next;
-        delete temp;
-    }
-    delete head;
-    head = nullptr;
-    size = 0;
-}
-
 CircularList& CircularList::operator=(const CircularList& other) {
     if (this != &other) {
         clear();
-        Node* current = other.head;
-        if (current) {
-            do {
-                insert(current->data);
-                current = current->next;
-            } while (current != other.head);
-        }
+        copyFrom(other);
     }
     return *this;
 }
@@ -70,6 +47,15 @@ CircularList& CircularList::operator=(CircularList&& other) noexcept {
     return *this;
 }
 
+CircularList& CircularList::operator<<(int value) {
+    prepend(value);
+    return *this;
+}
+
+int CircularList::operator>>(int dummy) {
+    return removeFirst();
+}
+
 bool CircularList::isEmpty() const {
     return size == 0;
 }
@@ -80,76 +66,81 @@ size_t CircularList::getSize() const {
 
 std::string CircularList::toString() const {
     std::ostringstream oss;
-    if (!head) return "[]";
-    
-    Node* current = head;
-    oss << "[";
-    do {
-        oss << current->data;
-        if (current->next != head) oss << ", ";
-        current = current->next;
-    } while (current != head);
-    oss << "]";
+    if (isEmpty()) {
+        oss << "[]";
+    } else {
+        oss << "[";
+        Node* current = head;
+        do {
+            oss << current->data;
+            if (current->next != head) {
+                oss << ", ";
+            }
+            current = current->next;
+        } while (current != head);
+        oss << "]";
+    }
     return oss.str();
 }
 
-void CircularList::insert(int value) {
+void CircularList::prepend(int value) {
     Node* newNode = new Node(value);
-    
-    if (!head) {
+    if (isEmpty()) {
         head = newNode;
         head->next = head;
     } else {
+        newNode->next = head;
         Node* last = head;
         while (last->next != head) {
             last = last->next;
         }
         last->next = newNode;
-        newNode->next = head;
+        head = newNode;
     }
     size++;
 }
 
-void CircularList::remove(int value) {
-    if (!head) return;
-    
-    Node* current = head;
-    Node* prev = nullptr;
-    
-    do {
-        if (current->data == value) {
-            if (current == head && head->next == head) {
-                delete head;
-                head = nullptr;
-            } else {
-                if (current == head) {
-                    Node* last = head;
-                    while (last->next != head) {
-                        last = last->next;
-                    }
-                    head = head->next;
-                    last->next = head;
-                } else {
-                    prev->next = current->next;
-                }
-                delete current;
-            }
-            size--;
-            return;
+int CircularList::removeFirst() {
+    if (isEmpty()) {
+        throw std::runtime_error("Список пуст");
+    }
+
+    int value = head->data;
+    if (size == 1) {
+        delete head;
+        head = nullptr;
+    } else {
+        Node* last = head;
+        while (last->next != head) {
+            last = last->next;
         }
-        prev = current;
-        current = current->next;
-    } while (current != head);
+        Node* toDelete = head;
+        head = head->next;
+        last->next = head;
+        delete toDelete;
+    }
+    size--;
+    return value;
 }
 
-bool CircularList::contains(int value) const {
-    if (!head) return false;
-    
-    Node* current = head;
-    do {
-        if (current->data == value) return true;
-        current = current->next;
-    } while (current != head);
-    
-    return false;
+void CircularList::clear() {
+    while (!isEmpty()) {
+        removeFirst();
+    }
+}
+
+void CircularList::copyFrom(const CircularList& other) {
+    if (!other.isEmpty()) {
+        Node* current = other.head;
+        do {
+            prepend(current->data);
+            current = current->next;
+        } while (current != other.head);
+        
+        CircularList temp;
+        while (!isEmpty()) {
+            temp.prepend(removeFirst());
+        }
+        *this = std::move(temp);
+    }
 }

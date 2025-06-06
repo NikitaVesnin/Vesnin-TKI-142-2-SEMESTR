@@ -1,92 +1,125 @@
-// CircularList.h - Заголовочный файл класса CircularList
 #pragma once
 #include <initializer_list>
 #include <string>
 
-class Node;
+/**
+ * @class Node
+ * @brief Класс узла списка
+ */
+class Node {
+public:
+    int data;    
+    Node* next;  
+
+    /**
+     * @brief Конструктор узла
+     * @param value Значение узла
+     */
+    explicit Node(int value);
+};
 
 /**
  * @class CircularList
- * @brief Циклический односвязный список целых чисел
+ * @brief Класс циклического односвязного списка
  */
 class CircularList {
 private:
-    Node* head;     // Указатель на голову списка
-    size_t size;    // Размер списка
+    Node* head;  
+    size_t size; 
+public:
+    /**
+     * @brief Конструктор по умолчанию
+     */
+    CircularList();
+
+    /**
+     * @brief Конструктор с списком инициализации
+     * @param initList Список инициализации
+     */
+    CircularList(std::initializer_list<int> initList);
+
+    /**
+     * @brief Конструктор копирования
+     * @param other Список для копирования
+     */
+    CircularList(const CircularList& other);
+
+    /**
+     * @brief Конструктор перемещения
+     * @param other Список для перемещения
+     */
+    CircularList(CircularList&& other) noexcept;
+
+    ~CircularList();
+
+    /**
+     * @brief Оператор присваивания копированием
+     * @param other Список для копирования
+     * @return Ссылка на текущий список
+     */
+    CircularList& operator=(const CircularList& other);
+
+    /**
+     * @brief Оператор присваивания перемещением
+     * @param other Список для перемещения
+     * @return Ссылка на текущий список
+     */
+    CircularList& operator=(CircularList&& other) noexcept;
+
+    /**
+     * @brief Оператор сдвига влево (добавление элемента)
+     * @param value Значение для добавления
+     * @return Ссылка на текущий список
+     */
+    CircularList& operator<<(int value);
+
+    /**
+     * @brief Оператор сдвига вправо (удаление элемента)
+     * @param dummy Фиктивный параметр
+     * @return Удаленное значение
+     */
+    int operator>>(int dummy);
+
+    /**
+     * @brief Проверка на пустоту списка
+     * @return true если список пуст, false иначе
+     */
+    bool isEmpty() const;
+
+    /**
+     * @brief Получение размера списка
+     * @return Размер списка
+     */
+    size_t getSize() const;
+
+    /**
+     * @brief Преобразование списка в строку
+     * @return Строковое представление списка
+     */
+    std::string toString() const;
+
+    /**
+     * @brief Добавление элемента в начало списка
+     * @param value Значение для добавления
+     */
+    void prepend(int value);
+
+    /**
+     * @brief Удаление элемента из начала списка
+     * @return Удаленное значение
+     * @throw std::runtime_error если список пуст
+     */
+    int removeFirst();
 
     /**
      * @brief Очистка списка
      */
     void clear();
 
-public:
+private:
     /**
-     * @brief Конструктор по умолчанию
+     * @brief Копирование списка
+     * @param other Список для копирования
      */
-    CircularList();
-    /**
-     * @brief Конструктор со списком инициализации
-     * @param init Список инициализации
-     */
-    CircularList(std::initializer_list<int> init);
-    /**
-     * @brief Конструктор копирования
-     * @param other Копируемый список
-     */
-    CircularList(const CircularList& other);
-    /**
-     * @brief Конструктор перемещения
-     * @param other Перемещаемый список
-     */
-    CircularList(CircularList&& other) noexcept;
-
-    /**
-     * @brief Деструктор
-     */
-    ~CircularList();
-    
-    /**
-     * @brief Оператор присваивания копированием
-     * @param other Присваиваемый список
-     * @return Ссылка на текущий список
-     */
-    CircularList& operator=(const CircularList& other);
-    /**
-     * @brief Оператор присваивания перемещением
-     * @param other Перемещаемый список
-     * @return Ссылка на текущий список
-     */
-    CircularList& operator=(CircularList&& other) noexcept;
-    /**
-     * @brief Проверка на пустоту
-     * @return true если список пуст, иначе false
-     */
-    bool isEmpty() const;
-     /**
-     * @brief Получение размера списка
-     * @return Количество элементов в списке
-     */
-    size_t getSize() const;
-    /**
-     * @brief Преобразование в строку
-     * @return Строковое представление списка
-     */
-    std::string toString() const;
-    /**
-     * @brief Вставка элемента в конец списка
-     * @param value Вставляемое значение
-     */
-    
-    void insert(int value);
-    /**
-     * @brief Удаление элемента по значению
-     * @param value Удаляемое значение
-     */
-    void remove(int value);
-    /**
-     * @brief Проверка наличия элемента
-     * @param value Искомое значение
-     * @return true если элемент найден, иначе false
-     */
-    bool contains(int value) const;
+    void copyFrom(const CircularList& other);
 };
