@@ -1,31 +1,21 @@
 #pragma once
 #include <initializer_list>
 #include <string>
-
-/**
- * @class Node
- * @brief Класс узла списка
- */
-class Node {
-public:
-    int data;    
-    Node* next;  
-
-    /**
-     * @brief Конструктор узла
-     * @param value Значение узла
-     */
-    explicit Node(int value);
-};
-
 /**
  * @class CircularList
- * @brief Класс циклического односвязного списка
+ * @brief Класс циклического односвязного списка целых чисел
  */
 class CircularList {
 private:
     Node* head;  
     size_t size; 
+
+    /**
+     * @brief Копирует данные из другого списка
+     * @param other Список для копирования
+     */
+    void copyFrom(const CircularList& other);
+
 public:
     /**
      * @brief Конструктор по умолчанию
@@ -33,7 +23,7 @@ public:
     CircularList();
 
     /**
-     * @brief Конструктор с списком инициализации
+     * @brief Конструктор со списком инициализации
      * @param initList Список инициализации
      */
     CircularList(std::initializer_list<int> initList);
@@ -50,6 +40,9 @@ public:
      */
     CircularList(CircularList&& other) noexcept;
 
+    /**
+     * @brief Деструктор
+     */
     ~CircularList();
 
     /**
@@ -115,11 +108,4 @@ public:
      * @brief Очистка списка
      */
     void clear();
-
-private:
-    /**
-     * @brief Копирование списка
-     * @param other Список для копирования
-     */
-    void copyFrom(const CircularList& other);
 };

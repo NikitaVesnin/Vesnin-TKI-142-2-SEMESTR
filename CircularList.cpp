@@ -2,10 +2,6 @@
 #include <stdexcept>
 #include <sstream>
 
-
-Node::Node(int value) : data(value), next(nullptr) {}
-
-
 CircularList::CircularList() : head(nullptr), size(0) {}
 
 CircularList::CircularList(std::initializer_list<int> initList) : CircularList() {
@@ -26,6 +22,22 @@ CircularList::CircularList(CircularList&& other) noexcept
 
 CircularList::~CircularList() {
     clear();
+}
+
+void CircularList::copyFrom(const CircularList& other) {
+    if (!other.isEmpty()) {
+        Node* current = other.head;
+        do {
+            prepend(current->data);
+            current = current->next;
+        } while (current != other.head);
+        
+        CircularList temp;
+        while (!isEmpty()) {
+            temp.prepend(removeFirst());
+        }
+        *this = std::move(temp);
+    }
 }
 
 CircularList& CircularList::operator=(const CircularList& other) {
@@ -126,21 +138,5 @@ int CircularList::removeFirst() {
 void CircularList::clear() {
     while (!isEmpty()) {
         removeFirst();
-    }
-}
-
-void CircularList::copyFrom(const CircularList& other) {
-    if (!other.isEmpty()) {
-        Node* current = other.head;
-        do {
-            prepend(current->data);
-            current = current->next;
-        } while (current != other.head);
-        
-        CircularList temp;
-        while (!isEmpty()) {
-            temp.prepend(removeFirst());
-        }
-        *this = std::move(temp);
     }
 }

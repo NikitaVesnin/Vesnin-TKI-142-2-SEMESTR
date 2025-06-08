@@ -1,6 +1,5 @@
 #include <iostream>
 #include "CircularList.h"
-
 int main() {
     try {
         
