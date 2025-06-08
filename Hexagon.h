@@ -1,57 +1,111 @@
 #pragma once
 #include "Polygon.h"
-#include <vector>
+#include <initializer_list>
 
 class Hexagon : public Polygon {
 private:
-    std::vector<Point> vertices;
+    double sideLength; 
+
     /**
-     * @brief Проверка правильности шестиугольника
-     * @return true, если шестиугольник правильный, иначе false
+     * @brief Проверить валидность вершин для правильного шестиугольника
+     * @throw std::invalid_argument Если вершины не образуют правильный шестиугольник
      */
-    bool IsValid() const;
+    void validateVertices() const;
+
     /**
-     * @brief Вычисление длины стороны
-     * @return Длина стороны шестиугольника
+     * @brief Вычислить длину стороны по вершинам
+     * @return Длина стороны
      */
-    double SideLength() const;
-    
+    double calculateSideLength() const;
+
 public:
+    /**
+     * @brief Конструктор по умолчанию
+     * @details Создает шестиугольник с центром в (0,0) и стороной 1
+     */
     Hexagon();
+
     /**
-     * @brief Конструктор через вектор точек
-     * @param points Вектор из 6 точек
-     * @throw std::invalid_argument Если точки не образуют правильный шестиугольник
+     * @brief Конструктор по центру и длине стороны
+     * @param center Центр шестиугольника
+     * @param sideLength Длина стороны
+     * @throw std::invalid_argument Если длина стороны не положительна
      */
-    Hexagon(const std::vector<Point>& points);
+    Hexagon(const Point& center, double sideLength);
+
     /**
-     * @brief Конструктор через пары координат
-     * @param coords Вектор из 6 пар координат
-     * @throw std::invalid_argument Если точки не образуют правильный шестиугольник
+     * @brief Конструктор по списку вершин
+     * @param vertices Список вершин (должно быть 6 точек)
+     * @throw std::invalid_argument Если вершин не 6 или они не образуют правильный шестиугольник
      */
-    Hexagon(const std::vector<std::pair<double, double>>& coords);
-    
-    std::string ToString() const override;
-    double Area() const override;
-    double Perimeter() const override;
-    double Circumradius() const override;
-    void Read(std::istream& is) override;
+    Hexagon(const std::vector<Point>& vertices);
+
     /**
-     * @brief Оператор сравнения ==
+     * @brief Конструктор по списку инициализации точек
+     * @param initList Список инициализации точек
+     */
+    Hexagon(std::initializer_list<Point> initList);
+
+    /**
+     * @brief Получить длину стороны
+     * @return Длина стороны
+     */
+    double getSideLength() const;
+
+    /**
+     * @brief Вычислить периметр
+     * @return Периметр шестиугольника
+     */
+    double calculatePerimeter() const override;
+
+    /**
+     * @brief Вычислить площадь
+     * @return Площадь шестиугольника
+     */
+    double calculateArea() const override;
+
+    /**
+     * @brief Вычислить радиус описанной окружности
+     * @return Радиус описанной окружности
+     */
+    double calculateCircumradius() const override;
+
+    /**
+     * @brief Преобразовать в строку
+     * @return Строковое представление шестиугольника
+     */
+    std::string toString() const override;
+
+    /**
+     * @brief Прочитать шестиугольник из потока
+     * @param is Входной поток
+     */
+    void read(std::istream& is) override;
+
+    /**
+     * @brief Оператор сравнения на равенство
      * @param other Другой шестиугольник
-     * @return true, если шестиугольники равны, иначе false
+     * @return true если шестиугольники равны, false иначе
      */
     bool operator==(const Hexagon& other) const;
-     /**
-     * @brief Оператор сравнения !=
+
+    /**
+     * @brief Оператор сравнения на неравенство
      * @param other Другой шестиугольник
-     * @return true, если шестиугольники не равны, иначе false
+     * @return true если шестиугольники не равны, false иначе
      */
     bool operator!=(const Hexagon& other) const;
+
     /**
-     * @brief Создание шестиугольника из строки
-     * @param str Строка с координатами вершин
-     * @return Объект Hexagon
+     * @brief Статический метод преобразования в строку
+     * @param hexagon Шестиугольник для преобразования
+     * @return Строковое представление
      */
-    static Hexagon FromString(const std::string& str);
+    static std::string ToString(const Hexagon& hexagon);
+
+    /**
+     * @brief Статический метод чтения из стандартного потока ввода
+     * @return Прочитанный шестиугольник
+     */
+    static Hexagon ReadFromInput();
 };

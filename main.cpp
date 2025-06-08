@@ -1,30 +1,38 @@
-#include "Hexagon.h"
 #include <iostream>
+#include "Hexagon.h"
+
+Point inputPoint(const std::string& prompt) {
+    std::cout << prompt << " (введите x и y через пробел): ";
+    double x, y;
+    std::cin >> x >> y;
+    return Point(x, y);
+}
+
 int main() {
     try {
-        std::vector<Point> points = {
-            Point(1, 0),
-            Point(0.5, sqrt(3)/2),
-            Point(-0.5, sqrt(3)/2),
-            Point(-1, 0),
-            Point(-0.5, -sqrt(3)/2),
-            Point(0.5, -sqrt(3)/2)
-        };
         
-        Hexagon h1(points);
-        std::cout << h1 << std::endl;
-        std::cout << "Area: " << h1.Area() << std::endl;
-        std::cout << "Perimeter: " << h1.Perimeter() << std::endl;
-        std::cout << "Circumradius: " << h1.Circumradius() << std::endl;
+        Hexagon hex1;
+        std::cout << "\nШестиугольник по умолчанию:\n" << hex1 << std::endl;
         
-        std::cout << "Enter 6 points (x y) for hexagon: ";
-        Hexagon h2;
-        std::cin >> h2;
-        std::cout << h2 << std::endl;
+        Point center = inputPoint("Введите центр шестиугольника");
+        double sideLength;
+        std::cout << "Введите длину стороны: ";
+        std::cin >> sideLength;
+        
+        Hexagon hex2(center, sideLength);
+        std::cout << "\nСозданный шестиугольник:\n" << hex2 << std::endl;
+        
+        std::cout << "\nВведите 6 вершин шестиугольника (x y для каждой вершины):\n";
+        Hexagon hex3 = Hexagon::ReadFromInput();
+        std::cout << "\nШестиугольник по вершинам:\n" << Hexagon::ToString(hex3) << std::endl;
+        
+        std::cout << "hex1 == hex2? " << (hex1 == hex2 ? "Да" : "Нет") << std::endl;
+        std::cout << "hex1 != hex3? " << (hex1 != hex3 ? "Да" : "Нет") << std::endl;
         
     } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << "Ошибка: " << e.what() << std::endl;
         return 1;
     }
+    
     return 0;
 }

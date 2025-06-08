@@ -1,86 +1,133 @@
 #include "Hexagon.h"
 #include <cmath>
-#include <sstream>
 #include <stdexcept>
-Hexagon::Hexagon() {
-    vertices.resize(6);
-}
-Hexagon::Hexagon(const std::vector<Point>& points) {
-    if (points.size() != 6) {
-        throw std::invalid_argument("Hexagon must have exactly 6 points");
-    }
-    vertices = points;
-    if (!IsValid()) {
-        throw std::invalid_argument("Invalid hexagon points");
-    }
-}
-Hexagon::Hexagon(const std::vector<std::pair<double, double>>& coords) {
-    if (coords.size() != 6) {
-        throw std::invalid_argument("Hexagon must have exactly 6 points");
-    }
-    for (const auto& p : coords) {
-        vertices.emplace_back(p.first, p.second);
-    }
-    if (!IsValid()) {
-        throw std::invalid_argument("Invalid hexagon points");
+#include <sstream>
+#include <iomanip>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+Hexagon::Hexagon() : sideLength(1.0) {
+    for (int i = 0; i < 6; ++i) {
+        double angle = 2 * M_PI * i / 6;
+        double x = std::cos(angle);
+        double y = std::sin(angle);
+        vertices.emplace_back(x, y);
     }
 }
-bool Hexagon::IsValid() const {
-    double side = SideLength();
+
+Hexagon::Hexagon(const Point& center, double sideLength) : sideLength(sideLength) {
+    if (sideLength <= 0) {
+        throw std::invalid_argument("Длина стороны должна быть положительной");
+    }
+    
+    for (int i = 0; i < 6; ++i) {
+        double angle = 2 * M_PI * i / 6;
+        double x = center.getX() + sideLength * std::cos(angle);
+        double y = center.getY() + sideLength * std::sin(angle);
+        vertices.emplace_back(x, y);
+    }
+}
+
+Hexagon::Hexagon(const std::vector<Point>& vertices) {
+    if (vertices.size() != 6) {
+        throw std::invalid_argument("Шестиугольник должен иметь 6 вершин");
+    }
+    this->vertices = vertices;
+    validateVertices();
+    sideLength = calculateSideLength();
+}
+
+Hexagon::Hexagon(std::initializer_list<Point> initList) {
+    if (initList.size() != 6) {
+        throw std::invalid_argument("Шестиугольник должен иметь 6 вершин");
+    }
+    vertices = initList;
+    validateVertices();
+    sideLength = calculateSideLength();
+}
+
+void Hexagon::validateVertices() const {
+    double expectedDistance = vertices[0].distanceTo(vertices[1]);
+    
     for (size_t i = 1; i < 6; ++i) {
-        double dx = vertices[i].getX() - vertices[i-1].getX();
-        double dy = vertices[i].getY() - vertices[i-1].getY();
-        double currentSide = sqrt(dx*dx + dy*dy);
-        if (abs(currentSide - side) > 1e-6) {
-            return false;
+        double distance = vertices[i].distanceTo(vertices[(i + 1) % 6]);
+        if (std::abs(distance - expectedDistance) > 1e-6) {
+            throw std::invalid_argument("Все стороны шестиугольника должны быть равны");
         }
     }
-    return true;
 }
-double Hexagon::SideLength() const {
-    double dx = vertices[1].getX() - vertices[0].getX();
-    double dy = vertices[1].getY() - vertices[0].getY();
-    return sqrt(dx*dx + dy*dy);
+
+double Hexagon::calculateSideLength() const {
+    return vertices[0].distanceTo(vertices[1]);
 }
-std::string Hexagon::ToString() const {
+
+double Hexagon::getSideLength() const {
+    return sideLength;
+}
+
+double Hexagon::calculatePerimeter() const {
+    return 6 * sideLength;
+}
+
+double Hexagon::calculateArea() const {
+    return (3 * std::sqrt(3) / 2) * sideLength * sideLength;
+}
+
+double Hexagon::calculateCircumradius() const {
+    return sideLength;
+}
+
+std::string Hexagon::toString() const {
     std::ostringstream oss;
-    oss << "Hexagon with vertices: ";
-    for (const auto& p : vertices) {
-        oss << p << " ";
+    oss << "Правильный шестиугольник:\n";
+    oss << "  Длина стороны: " << sideLength << "\n";
+    oss << "  Периметр: " << calculatePerimeter() << "\n";
+    oss << "  Площадь: " << calculateArea() << "\n";
+    oss << "  Радиус описанной окружности: " << calculateCircumradius() << "\n";
+    oss << "  Вершины:\n";
+    for (const auto& vertex : vertices) {
+        oss << "    " << vertex << "\n";
     }
     return oss.str();
 }
-double Hexagon::Area() const {
-    double side = SideLength();
-    return 3 * sqrt(3) * side * side / 2;
-}
-double Hexagon::Perimeter() const {
-    return 6 * SideLength();
-}
-double Hexagon::Circumradius() const {
-    return SideLength();
-}
-void Hexagon::Read(std::istream& is) {
-    std::vector<Point> points(6);
+
+void Hexagon::read(std::istream& is) {
+    std::vector<Point> newVertices;
     for (int i = 0; i < 6; ++i) {
-        is >> points[i];
+        Point p;
+        is >> p;
+        newVertices.push_back(p);
     }
-    *this = Hexagon(points);
+    
+    if (newVertices.size() != 6) {
+        throw std::invalid_argument("Шестиугольник должен иметь 6 вершин");
+    }
+    
+    vertices = newVertices;
+    validateVertices();
+    sideLength = calculateSideLength();
 }
+
 bool Hexagon::operator==(const Hexagon& other) const {
-    for (size_t i = 0; i < 6; ++i) {
-        if (vertices[i] != other.vertices[i]) {
-            return false;
-        }
+    if (vertices.size() != other.vertices.size()) return false;
+    for (size_t i = 0; i < vertices.size(); ++i) {
+        if (vertices[i] != other.vertices[i]) return false;
     }
     return true;
 }
+
 bool Hexagon::operator!=(const Hexagon& other) const {
     return !(*this == other);
 }
-Hexagon Hexagon::FromString(const std::string& str) {
-    std::istringstream iss(str);
-    Hexagon h;
-    iss >> h;
-    return h;
+
+std::string Hexagon::ToString(const Hexagon& hexagon) {
+    return hexagon.toString();
+}
+
+Hexagon Hexagon::ReadFromInput() {
+    Hexagon hexagon;
+    std::cin >> hexagon;
+    return hexagon;
 }

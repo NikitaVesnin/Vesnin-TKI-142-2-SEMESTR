@@ -1,36 +1,73 @@
 #pragma once
-#include <string>
 #include <vector>
+#include <string>
 #include "Point.h"
+
 class Polygon {
+protected:
+    std::vector<Point> vertices;
+
 public:
+    /**
+     * @brief Виртуальный деструктор
+     */
     virtual ~Polygon() = default;
+
     /**
-     * @brief Преобразование в строку
-     * @return Строковое представление многоугольника
+     * @brief Получить количество вершин
+     * @return Количество вершин
      */
-    virtual std::string ToString() const = 0;
+    size_t getVertexCount() const;
+
     /**
-     * @brief Вычисление площади
-     * @return Площадь многоугольника
+     * @brief Получить вершины многоугольника
+     * @return Вектор вершин
      */
-    virtual double Area() const = 0;
+    const std::vector<Point>& getVertices() const;
+
     /**
-     * @brief Вычисление периметра
+     * @brief Виртуальный метод вычисления периметра
      * @return Периметр многоугольника
      */
-    virtual double Perimeter() const = 0;
+    virtual double calculatePerimeter() const = 0;
+
     /**
-     * @brief Вычисление радиуса описанной окружности
+     * @brief Виртуальный метод вычисления площади
+     * @return Площадь многоугольника
+     */
+    virtual double calculateArea() const = 0;
+
+    /**
+     * @brief Виртуальный метод вычисления радиуса описанной окружности
      * @return Радиус описанной окружности
      */
-    virtual double Circumradius() const = 0;
-     /**
-     * @brief Чтение из потока
+    virtual double calculateCircumradius() const = 0;
+
+    /**
+     * @brief Виртуальный метод преобразования в строку
+     * @return Строковое представление многоугольника
+     */
+    virtual std::string toString() const = 0;
+
+    /**
+     * @brief Виртуальный метод чтения из потока
      * @param is Входной поток
      */
-    virtual void Read(std::istream& is) = 0;
-    
-    friend std::istream& operator>>(std::istream& is, Polygon& p);
-    friend std::ostream& operator<<(std::ostream& os, const Polygon& p);
+    virtual void read(std::istream& is) = 0;
+
+    /**
+     * @brief Оператор ввода из потока
+     * @param is Входной поток
+     * @param polygon Многоугольник для ввода
+     * @return Поток после ввода
+     */
+    friend std::istream& operator>>(std::istream& is, Polygon& polygon);
+
+    /**
+     * @brief Оператор вывода в поток
+     * @param os Выходной поток
+     * @param polygon Многоугольник для вывода
+     * @return Поток после вывода
+     */
+    friend std::ostream& operator<<(std::ostream& os, const Polygon& polygon);
 };
