@@ -4,11 +4,9 @@
 #include <sstream>
 #include <iomanip>
 
-const double PI = acos(-1.0);
-
 Hexagon::Hexagon() : sideLength(1.0) {
     for (size_t i = 0; i < 6; ++i) {
-        double angle = 2 * PI * i / 6;
+        double angle = 2 * M_PI * i / 6;
         double x = std::cos(angle);
         double y = std::sin(angle);
         vertices.emplace_back(x, y);
