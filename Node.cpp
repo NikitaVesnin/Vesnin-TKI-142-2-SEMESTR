@@ -1,6 +1,11 @@
-#include "Node.h"
-/**
- * @brief Конструктор узла
- * @param value Значение узла
- */
-Node::Node(int value) : data(value), next(nullptr) {}
+#pragma once
+class CircularList {
+private:
+    struct Node {
+        int data;
+        Node* next;
+        explicit Node(int value) : data(value), next(nullptr) {}
+    };
+    
+    Node* head; 
+};

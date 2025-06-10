@@ -1,6 +1,7 @@
 #include "CircularList.h"
 #include <stdexcept>
 #include <sstream>
+#include "Node.h"
 
 CircularList::CircularList() : head(nullptr), size(0) {}
 
@@ -25,18 +26,16 @@ CircularList::~CircularList() {
 }
 
 void CircularList::copyFrom(const CircularList& other) {
+    if (this == &other) {  
+        return;            
+    }
+    clear();  
     if (!other.isEmpty()) {
         Node* current = other.head;
         do {
-            prepend(current->data);
+            append(current->data);  
             current = current->next;
         } while (current != other.head);
-        
-        CircularList temp;
-        while (!isEmpty()) {
-            temp.prepend(removeFirst());
-        }
-        *this = std::move(temp);
     }
 }
 
