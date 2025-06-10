@@ -4,13 +4,11 @@
 #include <sstream>
 #include <iomanip>
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
+const double PI = acos(-1.0);
 
 Hexagon::Hexagon() : sideLength(1.0) {
-    for (int i = 0; i < 6; ++i) {
-        double angle = 2 * M_PI * i / 6;
+    for (size_t i = 0; i < 6; ++i) {
+        double angle = 2 * PI * i / 6;
         double x = std::cos(angle);
         double y = std::sin(angle);
         vertices.emplace_back(x, y);
@@ -22,7 +20,7 @@ Hexagon::Hexagon(const Point& center, double sideLength) : sideLength(sideLength
         throw std::invalid_argument("Длина стороны должна быть положительной");
     }
     
-    for (int i = 0; i < 6; ++i) {
+    for (size_t i = 0; i < 6; ++i) {
         double angle = 2 * M_PI * i / 6;
         double x = center.getX() + sideLength * std::cos(angle);
         double y = center.getY() + sideLength * std::sin(angle);

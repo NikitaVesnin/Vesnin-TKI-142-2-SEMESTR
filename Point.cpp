@@ -1,6 +1,8 @@
 #include "Point.h"
 #include <cmath>
+#include <limits>
 
+const double EPSILON = 1e-6;
 Point::Point() : x(0), y(0) {}
 
 Point::Point(double x, double y) : x(x), y(y) {}
@@ -15,7 +17,8 @@ double Point::distanceTo(const Point& other) const {
 }
 
 bool Point::operator==(const Point& other) const {
-    return x == other.x && y == other.y;
+    return std::abs(x - other.x) < EPSILON && 
+           std::abs(y - other.y) < EPSILON;
 }
 
 bool Point::operator!=(const Point& other) const {
